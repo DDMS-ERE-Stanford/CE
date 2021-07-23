@@ -1,0 +1,38 @@
+-- Grid dimension nx, ny
+81  81
+-- Grid size dx(m), dy(m)
+20  20
+-- Boundary conditions lbc(m), rbc(m), wCond(m)
+9.0  8.0  10.0  7.0
+-- Number of wells 
+4
+-- Well locations (x,y)
+50  3
+25  30
+20  53
+47  77
+-- Prev Well Timestep size(days), No. of Timestep
+200  1
+-- After Well Timestep size(days), No. of Timestep
+20  3 
+-- Output time steps 
+0 1 2 3
+-- Number of Cores 
+1
+-- Channel parameters lperm(m/s), hperm(m/s), type of initial perm. field
+-4  -2  MPS
+-- Number of initial ensembles
+30
+-- Observation parameters 
+6  6  6  6
+-- Number of PnP models 
+3
+-- Data fidelity function (sigma, reg) 
+0.01  20
+-- Denoiser 
+0.2  dncnn
+-- VAE reg 
+0.5
+-- PnP algorithm parameters (rho, max_iter, tol)
+0.5  20   0.000001
+
