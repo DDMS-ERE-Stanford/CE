@@ -6,20 +6,24 @@ import os
 import math
 import numpy as np 
 
+## get the single field (realization) from file
 def getSingleField(filename, Dir):
    out_ = np.loadtxt(Dir+filename, dtype = 'float')
    out = out_.reshape(( -1, numOfSamples))
    outTrue = out[:, 0:1]
    return outTrue
 
+## get the multiple fields (realizations) from file 
 def getMultiFields(N_grid, filename, Dir): 
     out_ = np.loadtxt(Dir+filename, dtype = 'float')
     out = out_.reshape((-1, N_grid))
     return out
 
+## save the output text file 
 def output(Dir, filename, out):
     np.savetxt(Dir + filename,  out.flatten(), delimiter='\n')
 
+## read the simulation parameters (type of CE algorithm, grid info., boundary cond., simulation parameters)
 def readSimulParams(infile): 
     infile.readline() 
     line = infile.readline()
@@ -71,8 +75,8 @@ def readSimulParams(infile):
 
     return infile, simul_params
 
+## convert time unit and set well pos  
 def unitConversion( simul_params, channel_params ):
-    # convert time unit and set well pos  
     ngx = simul_params["ngx"] 
     ngy = simul_params["ngy"]
     well_locs = simul_params["well_locs"]
@@ -83,7 +87,8 @@ def unitConversion( simul_params, channel_params ):
     simul_params["dt_p"] = simul_params["dt_p"] * 3600 * 24 #days to secs
     simul_params["dt_w"] = simul_params["dt_w"] * 3600 * 24 
     return simul_params, channel_params
-    
+
+## read parameters for channel field information (true file name, permeability, type of initial realizations)    
 def readChannelParams(infile):
     infile.readline()
     line = infile.readline() 
@@ -104,6 +109,9 @@ def readChannelParams(infile):
        channel_params["total_samples"] = int(line) 
     return infile, channel_params
 
+## read parameters for observation points 
+## number of observation points for dynamic data:  nxblock_dyn * nyblock_dyn 
+## number of observation points for static data: nxblock_stat * nyblock_stat
 def readObsParams(infile): 
     infile.readline() 
     line = infile.readline() 
@@ -111,6 +119,7 @@ def readObsParams(infile):
     obs_params = { "nxblock_dyn": int(nxblock_dyn), "nyblock_dyn": int(nyblock_dyn), "nxblock_stat": int(nxblock_stat), "nyblock_stat": int(nyblock_stat)}
     return infile, obs_params
 
+## read the parameters for Plug and Play algorithm
 def readPnPParams(infile):
 
     infile.readline() 
@@ -145,6 +154,7 @@ def readPnPParams(infile):
 
    return infile, pnp_params
 
+## read the whole input file including simulation and algorithm info. 
 def readInput(filename, Dir):
     infile = open(Dir + filename, "r") 
     infile, simul_params = readSimulParams(infile)

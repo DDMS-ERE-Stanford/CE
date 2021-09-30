@@ -1,3 +1,7 @@
+###########################################################
+## forward.py: utility functions for forward simulation ###
+###########################################################
+
 import matplotlib.pyplot as plt
 import numpy as np
 from dolfin import *
@@ -104,19 +108,6 @@ def forwardWellFunc(u_old, Y, V, simul_params):
     a, L = lhs(F), rhs(F)
     A, b = assemble_system(a, L, bcs)
     
-    # point source 
- #   delta = PointSource(V, Point(20/81, 75/81,), -2.0)
- #   delta.apply(b)
- #   delta2 = PointSource(V, Point(20/81, 50/81,), -2.0)
- #   delta2.apply(b)
- #   
- #   delta3 = PointSource(V, Point(20/81, 30/81,), -2.0)
- #   delta3.apply(b)
-
- #   delta4 = PointSource(V, Point(20/81, 3/81,), -2.0)
- #   delta4.apply(b)
-
-
     # solve PDE 
     u = Function(V)
     solve(A, u.vector(), b)
@@ -125,7 +116,6 @@ def forwardWellFunc(u_old, Y, V, simul_params):
 
 def forwardWell(perm, channel_params, simul_params): 
     perm = perm * (channel_params["hperm"] - channel_params["lperm"]) + channel_params["lperm"]
- #   perm = perm * 5
     ngx = simul_params["ngx"]
     ngy = simul_params["ngy"]
     dx = simul_params["dx"] 
