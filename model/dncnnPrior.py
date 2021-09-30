@@ -1,3 +1,7 @@
+#-----------------------------------------
+# Dncnn prior for CNN based image denoiser
+#----------------------------------------
+
 import os.path
 import numpy as np
 import torch
@@ -11,8 +15,6 @@ def dncnnPrior( m_, channel_params, simul_params):
     
     lperm = channel_params["lperm"]
     hperm = channel_params["hperm"]
-#    m_ -= lperm 
-#    m_ = m_ / (hperm - lperm)
 
     m = m_.reshape(ngy, ngx)
     m = np.expand_dims(m, axis = 2) 
@@ -25,7 +27,7 @@ def dncnnPrior( m_, channel_params, simul_params):
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
-    from models_dncnn.network_dncnn import DnCNN as net
+    from model.network_dncnn import DnCNN as net
     
     model = net(in_nc = 1, out_nc = n_channels, nc=64, nb = nb, act_mode='R')
     model.load_state_dict(torch.load(model_path), strict=True)
@@ -37,6 +39,5 @@ def dncnnPrior( m_, channel_params, simul_params):
     m_denoise = util.tensor2single(m_denoise)
     m_denoise = m_denoise.reshape(ngx*ngy, 1) 
     
- #   m_denoise = m_denoise * (hperm - lperm) + lperm
     return m_denoise
     

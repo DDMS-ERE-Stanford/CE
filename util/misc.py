@@ -1,23 +1,18 @@
+##########################################################
+## Util functions for reading input ######################
+##########################################################
+
 import os 
 import math
 import numpy as np 
-import h5py
-from mpi4py import MPI as mpi 
 
-comm = mpi.COMM_WORLD
-rank = comm.Get_rank() 
-
-def getInput(Dir, filename, numOfSamples):
+def getSingleField(filename, Dir):
    out_ = np.loadtxt(Dir+filename, dtype = 'float')
    out = out_.reshape(( -1, numOfSamples))
    outTrue = out[:, 0:1]
-   if numOfSamples > 1: 
-      outEn = out[:, 1:]
-   else : 
-      outEn = None;
-   return outTrue, outEn
+   return outTrue
 
-def getEns(N_grid, filename, Dir): 
+def getMultiFields(N_grid, filename, Dir): 
     out_ = np.loadtxt(Dir+filename, dtype = 'float')
     out = out_.reshape((-1, N_grid))
     return out
@@ -26,6 +21,10 @@ def output(Dir, filename, out):
     np.savetxt(Dir + filename,  out.flatten(), delimiter='\n')
 
 def readSimulParams(infile): 
+    infile.readline() 
+    line = infile.readline()
+    ce_type = int(line) 
+
     infile.readline()
     line = infile.readline()
     ngx, ngy = line.split() 
@@ -64,15 +63,12 @@ def readSimulParams(infile):
     output_steps = [int(i) for i in output_steps]
 
      
-    infile.readline()
-    num_cores = infile.readline() 
-    simul_params = { "ngx" : int(ngx), "ngy" : int(ngy), "dx": float(dx), "dy": float(dy),\
+    simul_params = { "ce_type": int(ce_type), "ngx" : int(ngx), "ngy" : int(ngy), "dx": float(dx), "dy": float(dy),\
                      "ini_cond": float(d_ini), "lbc": float(lbc), "rbc": float(rbc), "wCond": float(wCond),\
                      "n_wells": n_wells, "well_locs": well_locs, \
                      "dt_p": float(dt_p),"dt_w": float(dt_w), "num_psteps": int(num_psteps), "num_wsteps": int(num_wsteps),\
                      "output_steps": output_steps }                  
 
-    simul_params["num_cores"] = int(num_cores)
     return infile, simul_params
 
 def unitConversion( simul_params, channel_params ):
@@ -88,15 +84,24 @@ def unitConversion( simul_params, channel_params ):
     simul_params["dt_w"] = simul_params["dt_w"] * 3600 * 24 
     return simul_params, channel_params
     
-def readChannelParams(infile): 
+def readChannelParams(infile):
+    infile.readline()
+    line = infile.readline() 
+    channel_params["true_file"] = line 
     infile.readline() 
     line = infile.readline() 
     lperm, hperm, initial = line.split()
     channel_params = { "lperm" : float(lperm), "hperm" : float(hperm), "initial": initial }
-    if (initial == "MPS"): 
+    if (initial == "MPS"):
+       infile.readline() 
+       line = infile.readline() 
+       channel_params["mps_file"] = line 
        infile.readline() 
        line = infile.readline()
-       channel_params["num_ens"] = int(line) 
+       channel_params["num_ens"] = int(line)
+       infile.readline() 
+       line = infile.readline() 
+       channel_params["total_samples"] = int(line) 
     return infile, channel_params
 
 def readObsParams(infile): 
@@ -107,6 +112,14 @@ def readObsParams(infile):
     return infile, obs_params
 
 def readPnPParams(infile):
+
+    infile.readline() 
+    line = infile.readline() 
+    rho, max_iter, tol = line.split() 
+    pnp_params["rho"] = float(rho) 
+    pnp_params["max_iter"] = int(max_iter) 
+    pnp_params["tol"] = float(tol) 
+ 
     infile.readline() 
     line = infile.readline() 
     num_models = line 
@@ -121,19 +134,16 @@ def readPnPParams(infile):
         pnp_params["dn_sigma"] = float(dn_sigma) 
         pnp_params["denoiser"] = denoiser
 
-    if (pnp_params["num_models"] > 2) : 
+    elif (pnp_params["num_models"] > 2) : 
         infile.readline() 
         line = infile.readline() 
         vae_reg = line 
         pnp_params["vae_reg"] = float(vae_reg)
 
-    infile.readline() 
-    line = infile.readline() 
-    rho, max_iter, tol = line.split() 
-    pnp_params["rho"] = float(rho) 
-    pnp_params["max_iter"] = int(max_iter) 
-    pnp_params["tol"] = float(tol) 
-    return infile, pnp_params
+    else: 
+        sys.exit("Number of PnP models should be greater than 1")
+
+   return infile, pnp_params
 
 def readInput(filename, Dir):
     infile = open(Dir + filename, "r") 
@@ -145,56 +155,3 @@ def readInput(filename, Dir):
     infile.close()
     return simul_params, channel_params, obs_params, pnp_params
 
-def readHDF(filename, Dir): 
-    hf = h5py.File(Dir + filename + '.h5','r')
-    n1 = hf['Y']
-    out = np.array(n1["vector_0"])
-    out = out[:, np.newaxis]
-    hf.close() 
-    return out
-
-def updateHDF(m, filename, Dir): 
-    hf = h5py.File(Dir + filename + '.h5','r+')
-    n1 = hf['Y']
-    n1["vector_0"][:] = m.flatten()
-    hf.close() 
- 
-def readOutParallel(num_cores, filename, Dir): 
-    out = np.empty((0,3)) 
-    for i in range(num_cores): 
-        name = Dir + filename + str(i) +'.txt'
-        temp = np.loadtxt(name)
-        out = np.append( out, temp, axis = 0 )
-    ind = np.lexsort((out[:,0], out[:,1]))
-    comm.Barrier() 
-    if rank == 0: 
-        delAuxFiles( num_cores, filename, Dir)
-    return out[ind, 2:3]
-
-def readOutTstepParallel(num_cores, num_tsteps, filename, Dir): 
-    out = np.empty((0, 2 + num_tsteps)) 
-    for i in range(num_cores): 
-        name = Dir + filename + str(i) +'.txt'
-        temp = np.loadtxt(name)
-        out = np.append( out, temp, axis = 0 )
-    ind = np.lexsort((out[:,0], out[:,1]))
-    comm.Barrier() 
-    if rank == 0: 
-        delAuxFiles( num_cores, filename, Dir )
-    return out[ind, 2:2+num_tsteps]
-
-def delAuxFiles( num_cores, filename, Dir ): 
-    for i in range(num_cores): 
-        name = Dir + filename + str(i) + '.txt'
-        os.remove(name) 
-
-def main():
-    Dir = "/data/cees/hjyang3/PnP/Case1/"
-    filename = "Input.txt"
-    simul_params, channel_params, pnp_params = readInput(filename, Dir) 
-    print(simul_params)
-    print(channel_params)
-    print(pnp_params)
-
-if __name__ == '__main__':
-    main()

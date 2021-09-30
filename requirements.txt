@@ -1,0 +1,28 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: linux-64
+bm3d=3.0.7=pypi_0
+dolfin-adjoint=2019.1.0=py_0
+fastcache=1.1.0=py38h1e0a361_1
+fenics=2019.1.0=py38h32f6830_10
+fenics-dijitso=2019.1.0=py_10
+fenics-dolfin=2019.1.0=py38hd3deb98_10
+fenics-ffc=2019.1.0=py_10
+fenics-fiat=2019.1.0=py_10
+fenics-libdolfin=2019.1.0=h8f7d7a8_10
+fenics-ufl=2019.1.0=py_10
+freetype=2.10.2=he06d7ca_0
+matplotlib=3.3.0=0
+matplotlib-base=3.3.0=py38hb801037_0
+metis=5.1.0=he1b5a44_1005
+numpy=1.19.0=py38h8854b6b_0
+opencv-python=4.3.0.36=pypi_0
+pyparsing=2.4.7=pyh9f0ad1d_0
+python=3.8.4=cpython_h425cb1d_0
+scikit-image=0.17.2=pypi_0
+scikit-learn=0.23.1=pypi_0
+scipy=1.5.1=py38h18bccfc_0
+time=1.8=h516909a_0
+torch=1.5.1=pypi_0
+torchvision=0.6.1=pypi_0
+tornado=6.0.4=py38h1e0a361_1

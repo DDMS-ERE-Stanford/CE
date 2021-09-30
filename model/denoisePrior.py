@@ -1,3 +1,8 @@
+#---------------------------------------------
+# Image denoiser agents 
+# bm3dPrior: bm3d denoiser 
+# tvPrior: total variation prior
+#----------------------------------------------
 import numpy as np 
 from bm3d import bm3d
 from skimage.restoration import denoise_tv_chambolle

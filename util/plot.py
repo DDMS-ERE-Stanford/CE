@@ -1,8 +1,14 @@
+#################################################
+## plot.py: util function for plotting the results
+##################################################
+
+
 import matplotlib.pyplot as plt
 import numpy as np
 import sys 
 import os 
 
+## plotField: plot one field 
 def plotField(u, simul_params, Filename, Dir): 
     ngx = simul_params["ngx"]
     ngy = simul_params["ngy"]
@@ -10,9 +16,9 @@ def plotField(u, simul_params, Filename, Dir):
     plt.figure()
     plt.imshow(u)
     plt.colorbar()
-   # plt.clim(0, 6.0)
     plt.savefig(Dir + Filename+'.png')
 
+## plotFieldWell: plot field with observation and production/injection wells  
 def plotFieldWell(u, simul_params, obs_x, obs_y, Filename, Dir): 
     ngx = simul_params["ngx"]
     ngy = simul_params["ngy"]
@@ -24,14 +30,13 @@ def plotFieldWell(u, simul_params, obs_x, obs_y, Filename, Dir):
     well_pos = simul_params["well_pos"]
     for i in range(simul_params["n_wells"]):
         plt.scatter( well_pos[i][0]/simul_params["dx"], well_pos[i][1]/simul_params["dy"], color = 'red', s = 100 )
-   # plt.clim(0, 6.0)
     plt.savefig(Dir + Filename+'.png')
 
 
+## plotProfile: plot for comparing the evolution of QOI
 def plotProfile(i, j, u_ini, u_1, u_2, u_3, u_true, channel_params,simul_params, Filename, Dir): 
     ngx = simul_params["ngx"]
     ngy = simul_params["ngy"]
-    #output_tsteps = simul_params["output_steps"]
     nsteps = simul_params["num_wsteps"]
     x1 = np.linspace(0, 50, nsteps+1, endpoint = True)
     ind = (i-1) + (j-1) * ngx 
@@ -51,6 +56,7 @@ def plotProfile(i, j, u_ini, u_1, u_2, u_3, u_true, channel_params,simul_params,
     plt.savefig(Dir + Filename + '.png')  
 
    
+## plotUncerainty: plot the uncertainty ranges of ensemble results and true result
 def plotUncertainty(i, j, u, u_true, channel_params,simul_params, Filename, Dir): 
     ngx = simul_params["ngx"]
     ngy = simul_params["ngy"]
@@ -73,6 +79,7 @@ def plotUncertainty(i, j, u, u_true, channel_params,simul_params, Filename, Dir)
     plt.fill_between(x1, (qoi_avg - ci), (qoi_avg+ci), alpha=.2)
     plt.savefig(Dir + Filename + '.png')  
 
+## plotFieldTstep: plot the evolution of result field with time
 def plotFieldTstep(u, simul_params, Filename, Dir): 
     ngx = simul_params["ngx"]
     ngy = simul_params["ngy"]
