@@ -9,7 +9,7 @@
 ### To use this code,
 1. Create the case folder with a data folder as its subfolder 
 2. Place the input field (image) data into the data folder 
-3. Create an input file describing all parameters and conditions for simulation (Detailed instructions and examples for the input file are provided in Case folders)
+3. Create an input file describing all parameters and conditions for simulation (Detailed instructions and examples for the input file are provided in the Case folders)
 4. Adjust run.py based on the user's SLURM setting (job partition, time, etc.) 
 5. Run the run.py file using 
 ```
