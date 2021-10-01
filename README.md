@@ -6,30 +6,32 @@
 ```
   conda install -r requirements.txt
 ```
-### How to use it? 
-1. Make the case folder with data folder as its subfolder 
-2. Place the input field (image) data to the data folder 
-3. Make the input file describing the all parameters and conditions for simulation (The detailed instructions and examples for input file are documented in Case folders)
+### To use this code,
+1. Create the case folder with a data folder as its subfolder 
+2. Place the input field (image) data into the data folder 
+3. Create an input file describing all parameters and conditions for simulation (The detailed instructions and examples for the input file are provided in Case folders)
 4. Adjust run.py based on the user's SLURM setting (job partition, time, etc.) 
 5. Run the run.py file using 
 ```
   python run.py input_dir input_file
 ```
-where input_file= name of input file, input_dir= path for input file
-- Example for deterministic case
+where input_file= name of input file, and input_dir= path for input file
+- An example for the deterministic case:
 ```
   python run.py /data/cees/hjyang3/CE/Case0 Input.txt
 ```
-- Example for probabilistic case 
+- An example for the probabilistic case:
 
 ```
   python run.py /data/cees/hjyang3/CE/Case1 Input.txt
 ```  
 
-6. The output updated files will be saved in the format of txt file in output folder. 
+6. Updated output files are saved in the txt format in the output folder. 
+
 ## Acknowledgement 
 - [Python code for DnCNN denoiser](https://github.com/cszn/DnCNN)
 - [Python wrapper for Bm3d denoiser](https://pypi.org/project/bm3d/)
+
 ## What is Consensus Equilibrium?
 - Consensus equilibrium (CE) framework was developed to integrate multiple heterogeneous models, and it can be viewed as the generalization of ADMM-based plug-and-play approach.
 - The main advantage of CE framework is that we can utilize multiple deep learning based models as well as physical models simultaneously to reconstruct the single image. 
