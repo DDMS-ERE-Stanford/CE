@@ -32,10 +32,26 @@ def getDataLoss( d_obs, m, obs_vec, channel_params, simul_params):
     for n in range(nwstep  + 1):
         d_ = d[:, n:n+1]
         d_obs_ = d_obs[:, n:n+1]
-        obj += 0.5 * np.dot((obs_vec*(d_-d_obs_)).T, obs_vec*(d_-d_obs_))
-    obj /= (nwstep+1)
+        obj += 0.5 * np.dot((obs_vec*(d_ - d_obs_)).T, obs_vec*(d_ - d_obs_))
+    obj /= (nwstep + 1)
     return obj, d 
 
+## get the directory in case folder: data, log, output 
+def get_case_dirs( input_dir ): 
+    data_dir = input_dir + "data"
+    if not os.path.isdir(data_dir): 
+        sys.exit("data folder should exist in Case folder") 
+    data_dir = data_dir + "/"
+    log_dir = input_dir + "log"
+    if not os.path.isdir(log_dir): 
+        os.mkdir(log_dir) 
+    output_dir = input_dir + "output" 
+    if not os.path.isdir(output_dir):
+        os.mkdir(output_dir)
+    output_dir = output_dir + "/" 
+
+    return data_dir, log_dir, output_dir 
+    
 ## compute the residual between updated and previous solution to check convergence of algorithm
 def getResidual(m_old, m_new):
     N = m_old.shape[0] 
