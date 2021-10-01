@@ -2,7 +2,7 @@
 ## Getting started 
 ### Prerequisites
 - SLURM work load manager should be installed for parallel computing 
-- The requirements.txt file should list all Python libraries that your notebooks depend on, and they will be installed using:
+- The requirements.txt file should list all Python libraries that your notebooks depend on. They will be installed using
 ```
   conda install -r requirements.txt
 ```
