@@ -16,8 +16,6 @@
 5  6 
 -- Output time steps 
 0 3 5
--- Number of Cores 
-1
 -- Name of true field file 
 channel_field.txt
 -- Channel parameters lperm(m/s), hperm(m/s), type of initial perm. field

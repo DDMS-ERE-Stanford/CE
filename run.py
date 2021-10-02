@@ -15,6 +15,7 @@ if __name__ == '__main__':
     input_file = sys.argv[2]
     simul_params, channel_params, obs_params, pnp_params = readInput( input_file, input_dir )
 
+    ce_type = simul_params["ce_type"] 
     if ce_type == 0:
         job_type = "Deterministic" 
     elif ce_type == 1: 

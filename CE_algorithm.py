@@ -60,7 +60,7 @@ def getResidual(m_old, m_new):
 
 ## one step CE algorithm with data fidelity and denoiser agents
 def one_step_dat_den( m_1, m_2, d_obs, obs_vec, channel_params, simul_params, pnp_params ): 
-    m_1_new = 2 * dataFidelitysProx( d_obs, m_1, m_1, obs_vec, channel_params, simul_params, pnp_params ) - m_1
+    m_1_new = 2 * dataFidelityProx( d_obs, m_1, m_1, obs_vec, channel_params, simul_params, pnp_params ) - m_1
     if ( pnp_params["denoiser"] == "bm3d"): 
         m_2_new = bm3dPrior(m_2, simul_params, pnp_params)
     elif (pnp_params["denoiser"] == "TV"): 
@@ -88,6 +88,6 @@ def one_step_dat_den_vae( m_1, m_2, m_3, d_obs, obs_vec, channel_params, simul_p
     m_1 = (1 - pnp_params["rho"]) * m_1 + pnp_params["rho"]/3 * ( -1 * m_1_new + 2 * m_2_new + 2 * m_3_new )  
     m_2 = (1 - pnp_params["rho"]) * m_2 + pnp_params["rho"]/3 * ( 2 * m_1_new + -1 * m_2_new + 2 * m_3_new ) 
     m_3 = (1 - pnp_params["rho"]) * m_3 + pnp_params["rho"]/3 * ( 2 * m_1_new + 2 * m_2_new - 1 * m_3_new ) 
-   return m_1, m_2, m_3
+    return m_1, m_2, m_3
  
 

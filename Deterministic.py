@@ -21,7 +21,7 @@ def deterministic_main( input_dir, input_file ):
     data_dir, log_dir, output_dir = get_case_dirs( input_dir ) 
     simul_params, channel_params, obs_params, pnp_params = readInput( input_file, input_dir )
     m_true, d_obs = getChannelTrue( channel_params, simul_params, channel_params["true_file"], data_dir)
-    log_file = "log_" + str(ind) + ".txt" 
+    log_file = "log_" + pnp_params["denoiser"] + ".txt" 
     _, obs_vec = obsMatrix( obs_params["nxblock_dyn"], obs_params["nyblock_dyn"], simul_params["ngx"], simul_params["ngy"] ) 
     f_log = open( log_dir + log_file, "w" ) 
     if (channel_params["initial"] == "Gauss"): 
