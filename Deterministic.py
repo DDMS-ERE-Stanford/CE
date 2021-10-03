@@ -46,7 +46,7 @@ def deterministic_main( input_dir, input_file ):
     f_log.write("Denoiser: %s, time : %5.2f s \n" %(pnp_params["denoiser"], time()-start_time))
     f_log.close()
     np.savetxt( output_dir + pnp_params["denoiser"] + ".txt", m_new )  
-    plotField( m, simul_params, "perm_output_" + pnp_params["denoiser"], output_dir) 
+    plotField( m_new, simul_params, "perm_output_" + pnp_params["denoiser"], output_dir) 
 
  
 if __name__ == '__main__': 
